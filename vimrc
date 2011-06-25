@@ -114,6 +114,7 @@ if has("gui_running") || has("gui_macvim")
 	let g:colors_name="desertEx"
 else
 	"colorscheme desertEx
+	colorscheme evening
 	set nu
 endif
 
