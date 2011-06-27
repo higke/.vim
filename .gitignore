@@ -1,5 +1,5 @@
 .netrwhist
 .DS_Store
-backups/
-sessions/
-Thumbs.db‎
+*.swp
+sessions/session.vim
+Thumbs.db
