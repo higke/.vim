@@ -1,5 +1,6 @@
 .netrwhist
 .DS_Store
 *.swp
-sessions/session.vim
+sessions/*.vim
+*.pyc
 Thumbs.db

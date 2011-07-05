@@ -525,3 +525,5 @@ vnoremap <C-P> :call PhpDocRange()<CR>
 nmap <leader>mks :call SaveSession()<CR>
 nmap <leader>lss :call LoadSession()<CR>
 
+"pep8.vim
+let g:pep8_map='<F4>'
