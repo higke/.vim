@@ -245,6 +245,11 @@ function! LoadSession()
 endfunction
 
 
+"读取和打开缓冲文件时把当前目录设为工作目录
+autocmd BufNewFile,BufRead * call SetPWD() 
+function! SetPWD() 
+	execute ':cd %:h'
+endfunction
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " commands
