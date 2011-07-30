@@ -36,8 +36,9 @@ hi Normal           ctermfg=253             ctermbg=235
 " Comment Group
 " -------------
 " any comment
-hi Comment          guifg=#606060                                   gui=none
-hi Comment          ctermfg=240                                     cterm=none
+"hi Comment          guifg=#606060                                   gui=none
+hi Comment          guifg=#a1a1a1
+hi Comment          ctermfg=245                                     cterm=none
 
 
 " Constant Group

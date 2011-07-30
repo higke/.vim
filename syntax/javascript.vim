@@ -1,10 +1,9 @@
 " Vim syntax file
 " Language:     JavaScript
 " Maintainer:   Yi Zhao (ZHAOYI) <zzlinux AT hotmail DOT com>
-" Last Change:  Nov 17, 2007
-" Version:      0.7.6
-" Changes:      Update the 'syntax sync' method to improve the performance
-"               with larget Javascript files. 
+" Last Change:  June 4, 2009
+" Version:      0.7.7
+" Changes:      Add "undefined" as a type keyword
 "
 " TODO:
 "  - Add the HTML syntax inside the JSDoc
@@ -20,9 +19,9 @@ endif
 
 "" Drop fold if it set but VIM doesn't support it.
 let b:javascript_fold='true'
-"if version < 600    " Don't support the old version
+if version < 600    " Don't support the old version
   unlet! b:javascript_fold
-"endif
+endif
 
 "" dollar sigh is permittd anywhere in an identifier
 setlocal iskeyword+=$
@@ -63,23 +62,24 @@ syntax region  javaScriptRegexpString   start=+/\(\*\|/\)\@!+ skip=+\\\\\|\\/+ e
 syntax match   javaScriptNumber         /\<-\=\d\+L\=\>\|\<0[xX]\x\+\>/
 syntax match   javaScriptFloat          /\<-\=\%(\d\+\.\d\+\|\d\+\.\|\.\d\+\)\%([eE][+-]\=\d\+\)\=\>/
 syntax match   javaScriptLabel          /\(?\s*\)\@<!\<\w\+\(\s*:\)\@=/
+
 "" JavaScript Prototype
 syntax keyword javaScriptPrototype      prototype
 
 "" Programm Keywords
 syntax keyword javaScriptSource         import export
-syntax keyword javaScriptType           const this var void yield
-syntax keyword javaScriptOperator       delete new in instanceof 
+syntax keyword javaScriptType           const this undefined var void yield 
+syntax keyword javaScriptOperator       delete new in instanceof let typeof
 syntax keyword javaScriptBoolean        true false
 syntax keyword javaScriptNull           null
 
 "" Statement Keywords
-syntax keyword javaScriptConditional    if else switch case default
+syntax keyword javaScriptConditional    if else
 syntax keyword javaScriptRepeat         do while for
-syntax keyword javaScriptBranch         break continue return
+syntax keyword javaScriptBranch         break continue switch case default return
 syntax keyword javaScriptStatement      try catch throw with finally
 
-syntax keyword javaScriptGlobalObjects  Array Boolean Date Function Infinity JavaArray JavaClass JavaObject JavaPackage window document Math Number NaN Object Packages RegExp String Undefined java netscape sun
+syntax keyword javaScriptGlobalObjects  Array Boolean Date Function Infinity JavaArray JavaClass JavaObject JavaPackage Math Number NaN Object Packages RegExp String Undefined java netscape sun
 
 syntax keyword javaScriptExceptions     Error EvalError RangeError ReferenceError SyntaxError TypeError URIError
 
@@ -97,11 +97,8 @@ syntax keyword javaScriptFutureKeys     abstract enum int short boolean export i
 
   " HTML events and internal variables
   syntax case ignore
-  syntax keyword javaScriptHtmlEvents     onblur onclick oncontextmenu ondblclick onfocus onkeydown onkeypress onkeyup onmousedown onmousemove onmouseout onmouseover onmouseup onresize onfocus
+  syntax keyword javaScriptHtmlEvents     onblur onclick oncontextmenu ondblclick onfocus onkeydown onkeypress onkeyup onmousedown onmousemove onmouseout onmouseover onmouseup onresize
   syntax case match
-
-  " syntax keyword javaScriptjQueryName     jQuery
-
 
 " Follow stuff should be highligh within a special context
 " While it can't be handled with context depended with Regex based highlight
@@ -110,7 +107,7 @@ if exists("javascript_enable_domhtmlcss")
 
     " DOM2 things
     syntax match javaScriptDomElemAttrs     contained /\%(nodeName\|nodeValue\|nodeType\|parentNode\|childNodes\|firstChild\|lastChild\|previousSibling\|nextSibling\|attributes\|ownerDocument\|namespaceURI\|prefix\|localName\|tagName\)\>/
-    syntax match javaScriptDomElemFuncs     contained /\%(insertBefore\|replaceChild\|removeChild\|appendChild\|hasChildNodes\|cloneNode\|normalize\|isSupported\|hasAttributes\|getAttribute\|setAttribute\|removeAttribute\|getAttributeNode\|setAttributeNode\|removeAttributeNode\|getElementById\|getElementsByName\|getElementsByTagName\|getAttributeNS\|setAttributeNS\|removeAttributeNS\|getAttributeNodeNS\|setAttributeNodeNS\|getElementsByTagNameNS\|hasAttribute\|hasAttributeNS\|createElement\|createTextNode\)\>/ nextgroup=javaScriptParen skipwhite
+    syntax match javaScriptDomElemFuncs     contained /\%(insertBefore\|replaceChild\|removeChild\|appendChild\|hasChildNodes\|cloneNode\|normalize\|isSupported\|hasAttributes\|getAttribute\|setAttribute\|removeAttribute\|getAttributeNode\|setAttributeNode\|removeAttributeNode\|getElementsByTagName\|getAttributeNS\|setAttributeNS\|removeAttributeNS\|getAttributeNodeNS\|setAttributeNodeNS\|getElementsByTagNameNS\|hasAttribute\|hasAttributeNS\)\>/ nextgroup=javaScriptParen skipwhite
     " HTML things
     syntax match javaScriptHtmlElemAttrs    contained /\%(className\|clientHeight\|clientLeft\|clientTop\|clientWidth\|dir\|id\|innerHTML\|lang\|length\|offsetHeight\|offsetLeft\|offsetParent\|offsetTop\|offsetWidth\|scrollHeight\|scrollLeft\|scrollTop\|scrollWidth\|style\|tabIndex\|title\)\>/
     syntax match javaScriptHtmlElemFuncs    contained /\%(blur\|click\|focus\|scrollIntoView\|addEventListener\|dispatchEvent\|removeEventListener\|item\)\>/ nextgroup=javaScriptParen skipwhite
@@ -143,7 +140,6 @@ syntax region  javaScriptBracket   matchgroup=javaScriptBracket transparent star
 syntax region  javaScriptParen     matchgroup=javaScriptParen   transparent start="("  end=")"  contains=@javaScriptAll,javaScriptParensErrA,javaScriptParensErrC,javaScriptParen,javaScriptBracket,javaScriptBlock,@htmlPreproc
 syntax region  javaScriptBlock     matchgroup=javaScriptBlock   transparent start="{"  end="}"  contains=@javaScriptAll,javaScriptParensErrA,javaScriptParensErrB,javaScriptParen,javaScriptBracket,javaScriptBlock,@htmlPreproc 
 
-
 "" catch errors caused by wrong parenthesis
 syntax match   javaScriptParensError    ")\|}\|\]"
 syntax match   javaScriptParensErrA     contained "\]"
@@ -156,7 +152,7 @@ if main_syntax == "javascript"
   syntax sync match javaScriptHighlight grouphere javaScriptBlock /{/
 endif
 
-""" Fold control
+"" Fold control
 if exists("b:javascript_fold")
     syntax match   javaScriptFunction       /\<function\>/ nextgroup=javaScriptFuncName skipwhite
     syntax match   javaScriptOpAssign       /=\@<!=/ nextgroup=javaScriptFuncBlock skipwhite skipempty
@@ -177,15 +173,6 @@ else
     setlocal foldlevel<
 endif
 
-" Define the Function name highlighting.
-	syntax match javaScriptFunction /\<function\>/ contains=JavaScriptAll
-	syntax match javaScriptFuncName "\w\+\s*" contains=JavaScriptFunction
-
-" Define the variables name highlighting.
-    "syntax keyword javaScriptvariable var
-	"syntax match JavaScriptVariable /\<var\>/ contains=JavaScriptType
-	"syntax match javaScriptVarName "\w\+\s*" contains=JavaScriptVariable 
-
 " Define the default highlighting.
 " For version 5.7 and earlier: only when not done already
 " For version 5.8 and later: only when an item doesn't have highlighting yet
@@ -201,17 +188,17 @@ if version >= 508 || !exists("did_javascript_syn_inits")
   HiLink javaScriptDocComment           Comment
   HiLink javaScriptCommentTodo          Todo
   HiLink javaScriptCvsTag               Function
-  HiLink javaScriptDocTags              CommentDoc
-  HiLink javaScriptDocSeeTag            CommentDoc
-  HiLink javaScriptDocParam             CommentDoc
+  HiLink javaScriptDocTags              Special
+  HiLink javaScriptDocSeeTag            Function
+  HiLink javaScriptDocParam             Function
   HiLink javaScriptStringS              String
   HiLink javaScriptStringD              String
   HiLink javaScriptRegexpString         String
   HiLink javaScriptCharacter            Character
-  HiLink javaScriptPrototype            Function
+  HiLink javaScriptPrototype            Type
   HiLink javaScriptConditional          Conditional
-  HiLink javaScriptBranch               Statement
-  HiLink javaScriptRepeat               Conditional
+  HiLink javaScriptBranch               Conditional
+  HiLink javaScriptRepeat               Repeat
   HiLink javaScriptStatement            Statement
   HiLink javaScriptFunction             Function
   HiLink javaScriptError                Error
@@ -226,25 +213,21 @@ if version >= 508 || !exists("did_javascript_syn_inits")
   HiLink javaScriptFloat                Number
   HiLink javaScriptBoolean              Boolean
   HiLink javaScriptLabel                Label
-  HiLink javaScriptSpecial              SpecialKey
-  HiLink javaScriptSource               SpecialKey
-  HiLink javaScriptGlobalObjects        SpecialKey
-  HiLink javaScriptExceptions           SpecialKey
-  HiLink javaScriptFuncName             PreProc
+  HiLink javaScriptSpecial              Special
+  HiLink javaScriptSource               Special
+  HiLink javaScriptGlobalObjects        Special
+  HiLink javaScriptExceptions           Special
 
   HiLink javaScriptDomErrNo             Constant
   HiLink javaScriptDomNodeConsts        Constant
-  HiLink javaScriptDomElemAttrs         Special
-  HiLink javaScriptDomElemFuncs         Special 
+  HiLink javaScriptDomElemAttrs         Label
+  HiLink javaScriptDomElemFuncs         PreProc
 
-  HiLink javaScriptHtmlEvents           Special 
-  HiLink javaScriptHtmlElemAttrs        Special 
-  HiLink javaScriptHtmlElemFuncs        Special 
-  HiLink javaScriptCssStyles            Special 
+  HiLink javaScriptHtmlEvents           Special
+  HiLink javaScriptHtmlElemAttrs        Label
+  HiLink javaScriptHtmlElemFuncs        PreProc
 
-  HiLink javaScriptjQueryName           SpecialKey
-  " HiLink javaScriptjQueryAPI			SpecialKey	  
-
+  HiLink javaScriptCssStyles            Label
 
   delcommand HiLink
 endif

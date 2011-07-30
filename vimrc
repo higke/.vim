@@ -1,7 +1,13 @@
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Maintainer: Tim Sims <tim.sims86 at gmail.com>
-" 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"=============================================================================
+"     FileName: .vimrc
+"         Desc: 
+"       Author: Tim Sims
+"        Email: tim.sims86@gmail.com
+"     HomePage: https://twitter.com/tim_si
+"      Version: 0.0.1
+"   LastChange: 2011-07-30 13:23:32
+"      History:
+"=============================================================================
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " default
@@ -20,6 +26,10 @@ set	ignorecase smartcase 		"搜索时不区分大小写, 如果键入了大写�
 set undolevels=1000				"设置撤销次数
 set ve=all
 set t_Co=256
+set nu
+if version >= 703
+ set rnu
+endif
 map Q gq
 inoremap <C-U> <C-G>u<C-U>
 
@@ -69,9 +79,6 @@ set fileencodings=utf-8,ucs-bom,gb18030,gbk,gb2312,cp936
 " 新建文件使用的编码
 set fileencoding=utf-8 
 if MySys() == "windows"
-	"source $VIMRUNTIME/vimrc_example.vim
-	"source $VIMRUNTIME/mswin.vim
-	"behave mswin
 	set fileencodings=ucs-bom,utf-8,cp936,gb18030,big5,euc-jp,euc-kr,latin1
 
 	" 解决菜单乱码
@@ -83,7 +90,6 @@ endif
 
 " Move Backup Files to ~/.vim/backups/
 if MySys() == 'mac' || MySys() == 'linux'
-
 	set backupdir=~/.vim/backups
 	set dir=~/.vim/backups
 	set nobackup 
@@ -97,7 +103,6 @@ endif
 set shiftwidth=4
 set tabstop=4
 set wrap  
-
 set wildmenu
 set matchpairs=(:),{:},[:],<:>
 set whichwrap=b,s,<,>,[,]
@@ -108,14 +113,10 @@ set foldmethod=syntax
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 if has("gui_running") || has("gui_macvim")
-	colorscheme desertEx
-	set rnu
-	"desertEx
-	let g:colors_name="desertEx"
+	colorscheme lucius
+	let g:colors_name="lucius"
 else
-	"colorscheme desertEx
-	colorscheme evening
-	set nu
+	colorscheme lucius
 endif
 
 if MySys() == "mac"
@@ -130,7 +131,6 @@ endif
 
 set anti
 set linespace=2 
-"set rnu
 set numberwidth=4
 set equalalways
 set guitablabel=%t
@@ -151,30 +151,8 @@ if has("gui_macvim")
 	set columns=135
 	set lines=58
 	"winpos 250	42 
-
-	"let macvim_skip_cmd_opt_movement = 1
-	"let macvim_hig_shift_movement = 1
-
 	set transp=2
 	set guioptions-=T "egmrt
-	""set guioptions+=b 
-
-	"macm File.New\ Tab						key=<D-T>
-	"macm File.Save<Tab>:w					key=<D-s>
-	"macm File.Save\ As\.\.\.<Tab>:sav		key=<D-S>
-	"macm Edit.Undo<Tab>u					key=<D-z> action=undo:
-	"macm Edit.Redo<Tab>^R					key=<D-Z> action=redo:
-	"macm Edit.Cut<Tab>"+x					key=<D-x> action=cut:
-	"macm Edit.Copy<Tab>"+y					key=<D-c> action=copy:
-	"macm Edit.Paste<Tab>"+gP				key=<D-v> action=paste:
-	"macm Edit.Select\ All<Tab>ggVG			key=<D-A> action=selectAll:
-	"macm Window.Toggle\ Full\ Screen\ Mode	key=<D-F>
-	"macm Window.Select\ Next\ Tab			key=<D-}>
-	"macm Window.Select\ Previous\ Tab		key=<D-{>
-"else
-	"set columns=120
-	"set lines=58
-	"winpos 250 35
 endif
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -190,7 +168,8 @@ endif
 
 "let g:jslint_neverAutoRun=1
 
-"autocmd BufRead * :lcd! %:p:h
+" 自动切换工作目录
+autocmd BufRead * :lcd! %:p:h
 
 " filetype
 autocmd BufNewFile,BufRead *.vm setlocal ft=vim
@@ -198,7 +177,7 @@ autocmd BufNewFile,BufRead *.vm setlocal ft=vim
 "强制让文件使用自定义的colorscheme
 autocmd BufNewFile,BufRead * call SetColorScheme() 
 function! SetColorScheme() 
-	execute ':colorscheme desertEx'
+	execute ':colorscheme lucius'
 endfunction
 
 " language support
@@ -226,14 +205,13 @@ autocmd FileType python set dictionary=~/.vim/dict/python.dict
 autocmd FileType javascript set dictionary=~/.vim/dict/javascript.dict
 autocmd FileType css set dictionary=~/.vim/dict/css.dict
 
-au Filetype smarty exec('set dictionary=~/.vim/syntax/smarty.vim') 
-au Filetype smarty set complete+=k 
 
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" commands
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 "Session auto-save/restore 
 set sessionoptions+=resize,options
-"autocmd VimEnter * call LoadSession()
-"autocmd VimLeave * call SaveSession()
 function! SaveSession()
 			call SetColorScheme()
 			execute 'mksession! ~/.vim/sessions/session.vim'
@@ -244,16 +222,6 @@ function! LoadSession()
 			execute 'source ~/.vim/sessions/session.vim'
 endfunction
 
-
-"读取和打开缓冲文件时把当前目录设为工作目录
-autocmd BufNewFile,BufRead * call SetPWD() 
-function! SetPWD() 
-	execute ':cd %:h'
-endfunction
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" commands
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 function! GetMySession(spath, ssname)
 	if a:ssname == 0
@@ -283,45 +251,6 @@ command! -nargs=+ LOAD call GetMySession(<f-args>)
 command! -nargs=+ SAVE call SetMySession(<f-args>) 
 
 
-" for make & debug
-
-""function! QFSwitch() " toggle quickfix window
-""	redir => ls_output
-""		execute ':silent! ls'
-""	redir END
-""
-""	let exists = match(ls_output, "[Quickfix List")
-""	if exists == -1
-""		execute ':copen'
-""	else
-""		execute ':cclose'
-""	endif
-""endfunction
-""
-""function! MyMake()
-""	exe 'call ' . b:myMake . '()'
-""endfunction
-""
-""function! MyLint()
-""	exe 'call ' . b:myLint . '()'
-""endfunction
-""
-""function! MyDebug()
-""	exe 'call ' . b:myDebug . '()'
-""endfunction
-""
-""function! MySetBreakPoint()
-""	exe 'call ' . b:mySetBreakPoint . '()'
-""endfunction
-""
-""function! MySetLog()
-""	exe 'call ' . b:mySetLog. '()'
-""endfunction
-""
-""function! MyRemoveBreakPoint()
-""	exe 'call ' . b:myRemoveBreakPoint . '()'
-""endfunction
-
 "检查当前文件代码语法(php){{{
 function! CheckPHPSyntax()
 	if &filetype!="php"
@@ -344,10 +273,19 @@ endfunction
 map <F6> :call CheckPHPSyntax()<CR>
 "}}}
 
+function! Phpcs()
+  " phpcs 命令的路径和参数, 请根据环境自行修改
+  ! ~/pear/bin/phpcs --standard=Zend "%"
+  cwindow
+endfunction
+" :w 自动验证语法
+"autocmd BufWritePost *.php call Phpcs()
+" :Phpcs 验证语法
+"command! Phpcs execute Phpcs()
+
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " map
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
 let mapleader=","
 let g:mapleader=","
 
@@ -361,17 +299,6 @@ else
 	map <silent> <leader>rc :tabe d:\vim\_vimrc<cr>
 endif
 map <leader>q :q<cr>
-"map <leader>qa :qa<cr>
-
-"for make & debug
-"noremap <F2> <ESC>:call MyLint()<CR>
-"noremap <F3> :call MyDebug()<CR>
-"noremap <F4> :call MyMake()<CR>
-"noremap <F5> <ESC>:call QFSwitch()<CR>
-"noremap <F6> :call MySetBreakPoint()<CR>
-"noremap <F7> :call MySetLog()<CR>
-"noremap <F8> :call MyRemoveBreakPoint()<CR>
-
 
 nmap <tab> 		v>
 nmap <s-tab> 	v<
@@ -453,30 +380,8 @@ imap <A-i> <Esc>di"i
 " plugin setting
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-"let g:miniBufExplMapWindowNavVim = 1 
-"let g:miniBufExplMapWindowNavArrows = 1 
-"let g:miniBufExplMapCTabSwitchBufs = 1 
-"let g:miniBufExplModSelTarget = 1 
-
-"bufExplorer setting
-"let g:bufExplorerSortBy='mru'
-"let g:bufExplorerSplitRight=0        " Split left.
-"let g:bufExplorerSplitVertical=1     " Split vertically.
-"let g:bufExplorerSplitVertSize = 30  " Split width
-"let g:bufExplorerUseCurrentWindow=1  " Open in new window.
-"let g:bufExplorerMaxHeight=25
-"let g:bufExplorerResize=1
-"autocmd BufWinEnter \[Buf\ List\] setl nonumber
-
-" 默认键映射 <leader>bv :VSBufExplorer
-"
-
-" tasklist
-"nmap <silent> <leader>tl :TaskList<CR>
-
-
-" taglists setting
 """""""""""""""""""""""""""""" " Tag list (ctags) """""""""""""""""""""""""""""" 
+
 if MySys() == "mac"
 	let Tlist_Ctags_Cmd = '/usr/local/bin/ctags'
 elseif MySys() == "linux" 
@@ -500,20 +405,14 @@ let Tlist_Show_One_File = 1
 let g:tlist_javascript_settings = 'javascript;f:function;c:class;o:object;m:method;s:string;a:array;n:constant'
 
 
+"""""""""""""""""""""""""""""" " NerdCommenter """""""""""""""""""""""""""""" 
+
 " NerdCommenter setting
 let NERDShutUp=1
 map <c-h> ,c<space>
 
-let VCSCommandSVKExec='disabled no such executable'
 
-"Use neocomplcache.
-let g:NeoComplCache_EnableAtStartup = 1
-"" Use smartcase.
-let g:NeoComplCache_SmartCase = 1
-"" Use camel case completion.
-let g:NeoComplCache_EnableCamelCaseCompletion = 1
-"" Use underbar completion.
-let g:NeoComplCache_EnableUnderbarCompletion = 1 
+"""""""""""""""""""""""""""""" " FuzzyFinder """""""""""""""""""""""""""""" 
 
 " FuzzyFinder setting
 nmap <leader>fb :FufBuffer<cr>
@@ -521,6 +420,8 @@ nmap <leader>ff :FufFile<cr>
 nmap <leader>fd :FufDir<cr>
 nmap <leader>fa :FufBookmark<cr>
 
+
+"""""""""""""""""""""""""""""" " 	phpDoc 	 """""""""""""""""""""""""""""" 
 
 inoremap <C-P> <ESC>:call PhpDocSingle()<CR>i 
 nnoremap <C-P> :call PhpDocSingle()<CR> 
@@ -530,5 +431,17 @@ vnoremap <C-P> :call PhpDocRange()<CR>
 nmap <leader>mks :call SaveSession()<CR>
 nmap <leader>lss :call LoadSession()<CR>
 
+"""""""""""""""""""""""""""""" " 	PEP8 	 """""""""""""""""""""""""""""" 
+
 "pep8.vim
 let g:pep8_map='<F4>'
+
+"""""""""""""""""""""""""""""" "   git-vim 	 """""""""""""""""""""""""""""" 
+
+set laststatus=2
+
+"""""""""""""""""""""""""""""" "   authorinfo 	 """""""""""""""""""""""""""""" 
+
+let g:vimrc_author='Tim Sims' 
+let g:vimrc_email='tim.sims86@gmail.com' 
+let g:vimrc_homepage='https://twitter.com/tim_si' 
