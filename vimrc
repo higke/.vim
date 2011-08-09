@@ -26,9 +26,10 @@ set	ignorecase smartcase 		"搜索时不区分大小写, 如果键入了大写�
 set undolevels=1000				"设置撤销次数
 set ve=all
 set t_Co=256
-set nu
 if version >= 703
  set rnu
+else
+ set nu
 endif
 map Q gq
 inoremap <C-U> <C-G>u<C-U>
@@ -148,10 +149,10 @@ let g:xml_use_xhtml = 1 "for xml.vim
 
 if has("gui_macvim")
 
-	set columns=135
+	"set columns=135
 	set lines=58
 	"winpos 250	42 
-	set transp=2
+	set transp=8
 	set guioptions-=T "egmrt
 endif
 
@@ -169,7 +170,7 @@ endif
 "let g:jslint_neverAutoRun=1
 
 " 自动切换工作目录
-autocmd BufRead * :lcd! %:p:h
+autocmd BufNewFile,BufRead,MenuPopup * :lcd! %:p:h
 
 " filetype
 autocmd BufNewFile,BufRead *.vm setlocal ft=vim
@@ -216,11 +217,13 @@ function! SaveSession()
 			call SetColorScheme()
 			execute 'mksession! ~/.vim/sessions/session.vim'
 endfunction
+nmap <leader>mks :call SaveSession()<CR>
 
 function! LoadSession()
 			call SetColorScheme()
 			execute 'source ~/.vim/sessions/session.vim'
 endfunction
+nmap <leader>lss :call LoadSession()<CR>
 
 
 function! GetMySession(spath, ssname)
@@ -419,6 +422,9 @@ nmap <leader>fb :FufBuffer<cr>
 nmap <leader>ff :FufFile<cr>
 nmap <leader>fd :FufDir<cr>
 nmap <leader>fa :FufBookmark<cr>
+nmap <C-j> g:fuf_keyOpenSplit
+nmap <C-k> g:fuf_keyOpenVsplit
+nmap <C-l> g:fuf_keyOpenTabpage
 
 
 """""""""""""""""""""""""""""" " 	phpDoc 	 """""""""""""""""""""""""""""" 
@@ -426,10 +432,6 @@ nmap <leader>fa :FufBookmark<cr>
 inoremap <C-P> <ESC>:call PhpDocSingle()<CR>i 
 nnoremap <C-P> :call PhpDocSingle()<CR> 
 vnoremap <C-P> :call PhpDocRange()<CR> 
-
-"session
-nmap <leader>mks :call SaveSession()<CR>
-nmap <leader>lss :call LoadSession()<CR>
 
 """""""""""""""""""""""""""""" " 	PEP8 	 """""""""""""""""""""""""""""" 
 
@@ -445,3 +447,13 @@ set laststatus=2
 let g:vimrc_author='Tim Sims' 
 let g:vimrc_email='tim.sims86@gmail.com' 
 let g:vimrc_homepage='https://twitter.com/tim_si' 
+
+
+"""""""""""""""""""""""""""""" "   ConqueTerm 	 """""""""""""""""""""""""""""" 
+
+let g:ConqueTerm_PyVersion = 2
+let g:ConqueTerm_FastMode = 0
+let g:ConqueTerm_Color = 1
+let g:ConqueTerm_ReadUnfocused = 1
+let g:ConqueTerm_Syntax = 'conque'
+nmap <leader>bs :ConqueTermSplit bash<cr>
