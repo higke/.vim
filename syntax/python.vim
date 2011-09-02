@@ -264,7 +264,6 @@ syn match pythonOper    "+"
 syn match pythonOper    "-"
 syn match pythonOper    "*"
 syn match pythonOper    "\/"
-syn match pythonOper    ":"
 
 
 if version >= 508 || !exists("did_python_syn_inits")
@@ -293,6 +292,7 @@ if version >= 508 || !exists("did_python_syn_inits")
   HiLink pythonStringFunc       Function
   HiLink pythonArrayFunc        Function
   HiLink pythonFileFunc         Function
+  HiLink pythonFunctionVars	FunctionVars
   if !exists("python_no_number_highlight")
     HiLink pythonNumber		Number
   endif

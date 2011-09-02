@@ -114,15 +114,15 @@ set foldmethod=syntax
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 if has("gui_running") || has("gui_macvim")
-	colorscheme lucius
-	let g:colors_name="lucius"
+	colorscheme molokai
+	let g:colors_name="molokai"
 else
-	colorscheme lucius
+	colorscheme molokai
 endif
 
 if MySys() == "mac"
-	set guifont=Monaco:h12.5
-	set guifontwide=Monaco:h12.5
+	set guifont=Monaco:h12
+	set guifontwide=Monaco:h12
 elseif MySys() == "linux"
 	set guifont=Monospace
 else
@@ -149,9 +149,9 @@ let g:xml_use_xhtml = 1 "for xml.vim
 
 if has("gui_macvim")
 
-	"set columns=135
+	set columns=135
 	set lines=58
-	"winpos 250	42 
+	winpos 250	42 
 	set transp=8
 	set guioptions-=T "egmrt
 endif
@@ -178,7 +178,7 @@ autocmd BufNewFile,BufRead *.vm setlocal ft=vim
 "强制让文件使用自定义的colorscheme
 autocmd BufNewFile,BufRead * call SetColorScheme() 
 function! SetColorScheme() 
-	execute ':colorscheme lucius'
+	execute ':colorscheme molokai'
 endfunction
 
 " language support
