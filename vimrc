@@ -28,6 +28,7 @@ set ve=all
 set t_Co=256
 if version >= 703
  set rnu
+ set colorcolumn=80
 else
  set nu
 endif
@@ -63,10 +64,12 @@ endif
 " Platform
 function! MySys()
 	if has("win32") || has("win64")
+		set clipboard+=unnamed
 		return "windows"
 	elseif has("mac")
 		return "mac"
 	else
+		set clipboard=unnamedplus
 		return "linux"
 	endif
 endfunction
@@ -121,8 +124,8 @@ else
 endif
 
 if MySys() == "mac"
-	set guifont=Monaco:h12
-	set guifontwide=Monaco:h12
+	set guifont=Monaco:h13
+	set guifontwide=Monaco:h13
 elseif MySys() == "linux"
 	set guifont=Monospace
 else
@@ -149,10 +152,10 @@ let g:xml_use_xhtml = 1 "for xml.vim
 
 if has("gui_macvim")
 
-	set columns=135
-	set lines=58
-	winpos 250	42 
-	set transp=8
+	set columns=120
+	set lines=53
+	winpos 350	42 
+	set transp=0
 	set guioptions-=T "egmrt
 endif
 
@@ -195,9 +198,11 @@ au BufRead,BufNewFile *.pstpl set filetype=html
 au FileType php call AddPHPFuncList()
 function! AddPHPFuncList()
 	if MySys() == 'mac' || MySys() == 'linux'
-		set dictionary-=~/.vim/dict/php_funclist.txt dictionary+=~/.vim/dict/php_funclist.txt
+		set dictionary-=~/.vim/dict/php_funclist.txt 
+		set dictionary+=~/.vim/dict/php_funclist.txt
 	else
-		set dictionary-=d:\vim\vimfiles\dict\php_funclist.txt dictionary+=~\.vim\dict\php_funclist.txt
+		set dictionary-=d:\vim\vimfiles\dict\php_funclist.txt 
+		set dictionary+=d:\vim\vimfiles\dict\php_funclist.txt
 	endif
 	set complete-=k complete+=k
 endfunction
@@ -214,14 +219,14 @@ autocmd FileType css set dictionary=~/.vim/dict/css.dict
 "Session auto-save/restore 
 set sessionoptions+=resize,options
 function! SaveSession()
-			call SetColorScheme()
-			execute 'mksession! ~/.vim/sessions/session.vim'
+	call SetColorScheme()
+	execute 'mksession! ~/.vim/sessions/session.vim'
 endfunction
 nmap <leader>mks :call SaveSession()<CR>
 
 function! LoadSession()
-			call SetColorScheme()
-			execute 'source ~/.vim/sessions/session.vim'
+	call SetColorScheme()
+	execute 'source ~/.vim/sessions/session.vim'
 endfunction
 nmap <leader>lss :call LoadSession()<CR>
 
@@ -257,7 +262,7 @@ command! -nargs=+ SAVE call SetMySession(<f-args>)
 "检查当前文件代码语法(php){{{
 function! CheckPHPSyntax()
 	if &filetype!="php"
-		echohl WarningMsg | echo "Fail to check syntax! Please select the right file!" | echohl None
+		echohl WarningMsg | echo "Fail to check syntax!  Please select the right file!" | echohl None
 		return
 	endif
 	if &filetype=="php"
@@ -277,9 +282,9 @@ map <F6> :call CheckPHPSyntax()<CR>
 "}}}
 
 function! Phpcs()
-  " phpcs 命令的路径和参数, 请根据环境自行修改
-  ! ~/pear/bin/phpcs --standard=Zend "%"
-  cwindow
+	" phpcs 命令的路径和参数, 请根据环境自行修改
+	! ~/pear/bin/phpcs --standard=Zend "%"
+	cwindow
 endfunction
 " :w 自动验证语法
 "autocmd BufWritePost *.php call Phpcs()
@@ -383,7 +388,7 @@ imap <A-i> <Esc>di"i
 " plugin setting
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-"""""""""""""""""""""""""""""" " Tag list (ctags) """""""""""""""""""""""""""""" 
+"""""""""""""""""""""""" " Tag list (ctags) """""""""""""""""""""""""""" 
 
 if MySys() == "mac"
 	let Tlist_Ctags_Cmd = '/usr/local/bin/ctags'
@@ -449,7 +454,7 @@ let g:vimrc_email='tim.sims86@gmail.com'
 let g:vimrc_homepage='https://twitter.com/tim_si' 
 
 
-"""""""""""""""""""""""""""""" "   ConqueTerm 	 """""""""""""""""""""""""""""" 
+"""""""""""""""""""""""""""" "   ConqueTerm 	 """"""""""""""""""""""""""""""
 
 let g:ConqueTerm_PyVersion = 2
 let g:ConqueTerm_FastMode = 0
