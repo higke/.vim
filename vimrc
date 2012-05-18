@@ -193,6 +193,11 @@ au! BufRead,BufNewFile *.json setfiletype json
 au BufRead,BufNewFile *.tpl set filetype=smarty 
 au BufRead,BufNewFile *.lbi set filetype=html
 au BufRead,BufNewFile *.pstpl set filetype=html
+au BufRead,BufNewFile *.coffee set filetype=coffee
+au BufWritePost *.coffee silent CoffeeMake!
+au BufWritePost *.coffee silent CoffeeMake! -b | cwindow | redraw!
+au BufNewFile,BufReadPost *.coffee setl foldmethod=indent nofoldenable
+au BufNewFile,BufReadPost *.coffee setl shiftwidth=2 expandtab
 
 "设置字典
 au FileType php call AddPHPFuncList()
