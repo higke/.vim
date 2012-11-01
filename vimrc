@@ -296,6 +296,79 @@ endfunction
 " :Phpcs 验证语法
 "command! Phpcs execute Phpcs()
 
+"单个文件编译
+"进行make的设置
+au BufNewFile,BufRead *.cpp,*.c,*.h map <F5> :call Do_OneFileMake()<CR>
+au BufNewFile,BufRead *.cpp,*.c,*.h map <F6> :call Do_make()<CR>
+au BufNewFile,BufRead *.cpp,*.c,*.h map <c-F6> :silent make clean<CR>
+function! Do_make()
+	set makeprg=make
+	execute "silent make"
+	execute "copen"
+endfunction
+function! Do_OneFileMake()
+	if expand("%:p:h")!=getcwd()
+		echohl WarningMsg | echo "Fail to make! This file is not in the \
+		current dir! Press <F7> to redirect to the dir of this file." | echohl None
+		return
+	endif
+	let sourcefileename=expand("%:t")
+	if (sourcefileename=="" || (&filetype!="cpp" && &filetype!="c"))
+		echohl WarningMsg | echo "Fail to make! Please select the right file!" | echohl None
+		return
+	endif
+	let deletedspacefilename=substitute(sourcefileename,' ','','g')
+	if strlen(deletedspacefilename)!=strlen(sourcefileename)
+		echohl WarningMsg | echo "Fail to make! Please delete the spaces in the filename!" | echohl None
+		return
+	endif
+	if &filetype=="c"
+		if MySys() == "windows"
+			set makeprg=gcc\ -o\ %<.exe\ %
+		else
+			set makeprg=gcc\ -o\ %<\ %
+		endif
+	elseif &filetype=="cpp"
+		if MySys() == "windows"
+			set makeprg=g++\ -o\ %<.exe\ %
+		else
+			set makeprg=g++\ -o\ %<\ %
+		endif
+		"elseif &filetype=="cs"
+		"set makeprg=csc\ \/nologo\ \/out:%<.exe\ %
+	endif
+	if(MySys() == 'windows')
+		let outfilename=substitute(sourcefileename,'\(\.[^.]*\)' ,'.exe','g')
+		let toexename=outfilename
+	else
+		let outfilename=substitute(sourcefileename,'\(\.[^.]*\)' ,'','g')
+		let toexename=outfilename
+	endif
+	if filereadable(outfilename)
+		if(MySys() == 'windows')
+			let outdeletedsuccess=delete(getcwd()."\\".outfilename)
+		else
+			let outdeletedsuccess=delete("./".outfilename)
+		endif
+		if(outdeletedsuccess!=0)
+			set makeprg=make
+			echohl WarningMsg | echo "Fail to make! I cannot delete the ".outfilename | echohl None
+			return
+		endif
+	endif
+	execute "silent make"
+	set makeprg=make
+	execute "normal :"
+	if filereadable(outfilename)
+		if(MySys() == 'windows')
+			execute "!".toexename
+		else
+			execute "!./".toexename
+		endif
+	endif
+	execute "copen"
+endfunction
+
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " map
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -417,8 +490,11 @@ let Tlist_Show_One_File = 1
 
 let g:tlist_javascript_settings = 'javascript;f:function;c:class;o:object;m:method;s:string;a:array;n:constant'
 
+"""""""""""""""""""""""""""""" " a.vim 		 """""""""""""""""""""""""""""" 
+
 
 """""""""""""""""""""""""""""" " NerdCommenter """""""""""""""""""""""""""""" 
+nmap <leader>av :AV<cr>
 
 " NerdCommenter setting
 let NERDShutUp=1
